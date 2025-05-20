@@ -9,7 +9,6 @@ A Python-based network monitoring tool that scans your local network for connect
   - MAC address vendor information
   - Port scanning
   - TTL analysis
-  - Common device signatures
 - **New Device Alerts**: Sends email notifications when new devices are detected
 - **Persistent Storage**: Stores device information in SQLite database
 - **Web Interface**: Clean, modern UI showing:
@@ -19,13 +18,11 @@ A Python-based network monitoring tool that scans your local network for connect
   - New device alerts
 - **Device History**: Tracks when devices were first and last seen on the network
 
-## Technical Details
-
-### How It Works
+## How It Works
 
 1. **Network Scanning**:
    - Uses Scapy for ARP scanning
-   - Scans the local network (default: 192.168.86.1/24)
+   - Scans the local network
    - Collects IP and MAC addresses
 
 2. **Device Type Detection**:
@@ -55,8 +52,8 @@ A Python-based network monitoring tool that scans your local network for connect
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/network-monitor.git
-   cd network-monitor
+   git clone https://github.com/ldemaj/network-security-monitor.git
+   cd network-security-monitor
    ```
 
 2. Create and activate a virtual environment:
@@ -79,16 +76,10 @@ A Python-based network monitoring tool that scans your local network for connect
    - macOS: `brew install nmap`
 
 5. Set up environment variables for email notifications (optional):
-   ```bash
-   # Windows
-   set EMAIL_SENDER=your-email@gmail.com
-   set EMAIL_PASSWORD=your-app-password
-   set EMAIL_RECEIVER=receiver-email@example.com
-
-   # Linux/Mac
-   export EMAIL_SENDER=your-email@gmail.com
-   export EMAIL_PASSWORD=your-app-password
-   export EMAIL_RECEIVER=receiver-email@example.com
+   ```
+   EMAIL_SENDER=your-email@gmail.com
+   EMAIL_PASSWORD=your-app-password
+   EMAIL_RECEIVER=receiver-email@example.com
    ```
 
    Note: For Gmail, you'll need to use an App Password. See [Google's documentation](https://support.google.com/accounts/answer/185833) for details.
@@ -133,9 +124,9 @@ A Python-based network monitoring tool that scans your local network for connect
 
    [Service]
    User=root
-   WorkingDirectory=/path/to/network-monitor
-   Environment=PATH=/path/to/network-monitor/venv/bin
-   ExecStart=/path/to/network-monitor/venv/bin/python app.py
+   WorkingDirectory=/path/to/network-security-monitor
+   Environment=PATH=/path/to/network-security-monitor/venv/bin
+   ExecStart=/path/to/network-security-monitor/venv/bin/python app.py
    Restart=always
 
    [Install]
@@ -144,8 +135,8 @@ A Python-based network monitoring tool that scans your local network for connect
 
 2. Enable and start the service:
    ```bash
-   sudo systemctl enable network-monitor
-   sudo systemctl start network-monitor
+   sudo systemctl enable network-security-monitor
+   sudo systemctl start network-security-monitor
    ```
 
 ## Security Considerations
@@ -175,7 +166,3 @@ A Python-based network monitoring tool that scans your local network for connect
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details. 
