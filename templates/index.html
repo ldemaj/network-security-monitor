@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Network Watcher</title>
+  </head>
+  <body>
+    <h1>Scanned Devices</h1>
+    <ul>
+      {% for device in scanned %}
+      <li>{{ device.ip }} - {{ device.mac }} ({{ device.timestamp }})</li>
+      {% endfor %}
+    </ul>
+
+    {% if new_devices %}
+    <h2 style="color: red">New Devices Detected:</h2>
+    <ul>
+      {% for device in new_devices %}
+      <li>{{ device.ip }} - {{ device.mac }}</li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p>No new devices detected.</p>
+    {% endif %}
+  </body>
+</html>
