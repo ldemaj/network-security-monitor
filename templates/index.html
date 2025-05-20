@@ -2,24 +2,104 @@
 <html>
   <head>
     <title>Network Watcher</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      .container {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      }
+      h1, h2 {
+        color: #333;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 10px;
+      }
+      .device-list {
+        list-style: none;
+        padding: 0;
+      }
+      .device-item {
+        background-color: #f8f9fa;
+        margin: 10px 0;
+        padding: 15px;
+        border-radius: 4px;
+        border-left: 4px solid #007bff;
+      }
+      .device-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 10px;
+      }
+      .device-type {
+        font-weight: bold;
+        color: #007bff;
+      }
+      .device-mac {
+        color: #666;
+        font-family: monospace;
+      }
+      .device-ip {
+        color: #28a745;
+      }
+      .device-time {
+        color: #6c757d;
+        font-size: 0.9em;
+      }
+      .new-devices {
+        background-color: #fff3cd;
+        border-left-color: #ffc107;
+      }
+      .new-devices .device-type {
+        color: #dc3545;
+      }
+      .no-new-devices {
+        color: #28a745;
+        font-style: italic;
+      }
+    </style>
   </head>
   <body>
-    <h1>Scanned Devices</h1>
-    <ul>
-      {% for device in scanned %}
-      <li>{{ device.ip }} - {{ device.mac }} ({{ device.timestamp }})</li>
-      {% endfor %}
-    </ul>
+    <div class="container">
+      <h1>Network Devices</h1>
+      <ul class="device-list">
+        {% for device in scanned %}
+        <li class="device-item">
+          <div class="device-info">
+            <span class="device-type">{{ device.device_type }}</span>
+            <span class="device-ip">IP: {{ device.ip }}</span>
+            <span class="device-mac">MAC: {{ device.mac }}</span>
+            <span class="device-time">First seen: {{ device.first_seen }}</span>
+            <span class="device-time">Last seen: {{ device.last_seen }}</span>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
 
-    {% if new_devices %}
-    <h2 style="color: red">New Devices Detected:</h2>
-    <ul>
-      {% for device in new_devices %}
-      <li>{{ device.ip }} - {{ device.mac }}</li>
-      {% endfor %}
-    </ul>
-    {% else %}
-    <p>No new devices detected.</p>
-    {% endif %}
+      {% if new_devices %}
+      <h2>⚠️ New Devices Detected</h2>
+      <ul class="device-list">
+        {% for device in new_devices %}
+        <li class="device-item new-devices">
+          <div class="device-info">
+            <span class="device-type">{{ device.device_type }}</span>
+            <span class="device-ip">IP: {{ device.ip }}</span>
+            <span class="device-mac">MAC: {{ device.mac }}</span>
+            <span class="device-time">First seen: {{ device.first_seen }}</span>
+            <span class="device-time">Last seen: {{ device.last_seen }}</span>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="no-new-devices">No new devices detected.</p>
+      {% endif %}
+    </div>
   </body>
 </html>
