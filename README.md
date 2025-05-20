@@ -9,6 +9,7 @@ A Python-based network monitoring tool that scans your local network for connect
   - MAC address vendor information
   - Port scanning
   - TTL analysis
+  - Common device signatures
 - **New Device Alerts**: Sends email notifications when new devices are detected
 - **Persistent Storage**: Stores device information in SQLite database
 - **Web Interface**: Clean, modern UI showing:
@@ -17,12 +18,24 @@ A Python-based network monitoring tool that scans your local network for connect
   - First and last seen timestamps
   - New device alerts
 - **Device History**: Tracks when devices were first and last seen on the network
+- **Interactive IP Range Scanning**: 
+  - Input custom IP ranges through the web interface
+  - Real-time validation of IP ranges
+  - Support for common private network ranges
+- **Detailed Network Information**:
+  - Network topology details (network address, broadcast, netmask)
+  - System information (hostname, local IP, OS)
+  - Network interface details
+  - Device type statistics and distribution
+  - Real-time device counts and new device tracking
 
-## How It Works
+## Technical Details
+
+### How It Works
 
 1. **Network Scanning**:
    - Uses Scapy for ARP scanning
-   - Scans the local network
+   - Configurable IP range scanning
    - Collects IP and MAC addresses
 
 2. **Device Type Detection**:
@@ -42,18 +55,25 @@ A Python-based network monitoring tool that scans your local network for connect
    - Configurable alert thresholds
    - Detailed device information in alerts
 
+5. **Network Information**:
+   - Real-time system network details
+   - Interface monitoring
+   - Device statistics and analytics
+   - Network topology information
+
 ## Requirements
 
 - Python 3.7+
 - Nmap (for device type detection)
 - Administrator/root privileges (for network scanning)
+- psutil (for system and network information)
 
 ## Installation
 
 1. Clone the repository:
    ```bash
    git clone https://github.com/ldemaj/network-security-monitor.git
-   cd network-security-monitor
+   cd network-monitor
    ```
 
 2. Create and activate a virtual environment:
@@ -76,10 +96,16 @@ A Python-based network monitoring tool that scans your local network for connect
    - macOS: `brew install nmap`
 
 5. Set up environment variables for email notifications (optional):
-   ```
-   EMAIL_SENDER=your-email@gmail.com
-   EMAIL_PASSWORD=your-app-password
-   EMAIL_RECEIVER=receiver-email@example.com
+   ```bash
+   # Windows
+   set EMAIL_SENDER=your-email@gmail.com
+   set EMAIL_PASSWORD=your-app-password
+   set EMAIL_RECEIVER=receiver-email@example.com
+
+   # Linux/Mac
+   export EMAIL_SENDER=your-email@gmail.com
+   export EMAIL_PASSWORD=your-app-password
+   export EMAIL_RECEIVER=receiver-email@example.com
    ```
 
    Note: For Gmail, you'll need to use an App Password. See [Google's documentation](https://support.google.com/accounts/answer/185833) for details.
@@ -97,10 +123,19 @@ A Python-based network monitoring tool that scans your local network for connect
    - Navigate to `http://localhost:5000`
 
 3. The interface will show:
+   - Network scanning form for custom IP ranges
+   - Detailed network information
+   - System and interface details
+   - Device statistics and distribution
    - All discovered devices
    - Device types
    - Connection history
    - New device alerts
+
+4. To scan a custom IP range:
+   - Enter the IP range in the format `xxx.xxx.xxx.xxx/xx` (e.g., 192.168.1.1/24)
+   - Click "Scan Network"
+   - View the results in the updated interface
 
 ## Running as a Service
 
@@ -124,9 +159,9 @@ A Python-based network monitoring tool that scans your local network for connect
 
    [Service]
    User=root
-   WorkingDirectory=/path/to/network-security-monitor
-   Environment=PATH=/path/to/network-security-monitor/venv/bin
-   ExecStart=/path/to/network-security-monitor/venv/bin/python app.py
+   WorkingDirectory=/path/to/network-monitor
+   Environment=PATH=/path/to/network-monitor/venv/bin
+   ExecStart=/path/to/network-monitor/venv/bin/python app.py
    Restart=always
 
    [Install]
@@ -135,8 +170,8 @@ A Python-based network monitoring tool that scans your local network for connect
 
 2. Enable and start the service:
    ```bash
-   sudo systemctl enable network-security-monitor
-   sudo systemctl start network-security-monitor
+   sudo systemctl enable network-monitor
+   sudo systemctl start network-monitor
    ```
 
 ## Security Considerations
@@ -145,6 +180,8 @@ A Python-based network monitoring tool that scans your local network for connect
 - Email credentials should be stored securely
 - The database file contains network device information and should be protected
 - Consider using a firewall to restrict access to the web interface
+- Only private IP ranges are allowed for scanning
+- Network interface information is restricted to the local system
 
 ## Troubleshooting
 
@@ -152,6 +189,7 @@ A Python-based network monitoring tool that scans your local network for connect
    - Ensure you're running with administrator/root privileges
    - Check if your firewall is blocking the scans
    - Verify Nmap is installed correctly
+   - Check if the IP range is valid and accessible
 
 2. **Email Notifications**:
    - Verify environment variables are set correctly
@@ -163,6 +201,15 @@ A Python-based network monitoring tool that scans your local network for connect
    - This is normal for devices that don't respond to scans
    - Consider adjusting scan parameters in scanner.py
 
+4. **Network Information**:
+   - If system information is not showing, verify psutil is installed
+   - Check if you have the necessary permissions to access network interfaces
+   - Verify your network configuration is correct
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.

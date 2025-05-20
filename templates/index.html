@@ -63,11 +63,189 @@
         color: #28a745;
         font-style: italic;
       }
+      .network-info {
+        background-color: #e9ecef;
+        padding: 10px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+        font-family: monospace;
+      }
+      .scan-form {
+        background-color: #e9ecef;
+        padding: 20px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+      }
+      .scan-form input[type="text"] {
+        padding: 8px;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        margin-right: 10px;
+        width: 200px;
+      }
+      .scan-form button {
+        padding: 8px 16px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .scan-form button:hover {
+        background-color: #0056b3;
+      }
+      .error-message {
+        color: #dc3545;
+        margin-top: 10px;
+      }
+      .success-message {
+        color: #28a745;
+        margin-top: 10px;
+      }
+      .info-section {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+      }
+      .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-bottom: 20px;
+      }
+      .info-card {
+        background-color: white;
+        padding: 15px;
+        border-radius: 4px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      }
+      .info-card h3 {
+        margin-top: 0;
+        color: #007bff;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+      }
+      .info-item {
+        margin: 5px 0;
+      }
+      .info-label {
+        font-weight: bold;
+        color: #666;
+      }
+      .device-type-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 10px;
+        margin-top: 10px;
+      }
+      .device-type-item {
+        background-color: #e9ecef;
+        padding: 5px 10px;
+        border-radius: 4px;
+        text-align: center;
+      }
+      .device-type-count {
+        font-weight: bold;
+        color: #007bff;
+      }
     </style>
   </head>
   <body>
     <div class="container">
       <h1>Network Devices</h1>
+      
+      <div class="scan-form">
+        <form action="/scan" method="POST">
+          <input type="text" name="ip_range" placeholder="Enter IP range (e.g., 192.168.1.1/24)" 
+                 value="{{ ip_range or '' }}" required>
+          <button type="submit">Scan Network</button>
+        </form>
+        {% if error %}
+        <div class="error-message">{{ error }}</div>
+        {% endif %}
+        {% if success %}
+        <div class="success-message">{{ success }}</div>
+        {% endif %}
+      </div>
+
+      {% if network_info %}
+      <div class="info-section">
+        <h2>Network Information</h2>
+        <div class="info-grid">
+          <div class="info-card">
+            <h3>Network Details</h3>
+            <div class="info-item">
+              <span class="info-label">Network Address:</span> {{ network_info.network_address }}
+            </div>
+            <div class="info-item">
+              <span class="info-label">Broadcast Address:</span> {{ network_info.broadcast_address }}
+            </div>
+            <div class="info-item">
+              <span class="info-label">Netmask:</span> {{ network_info.netmask }}
+            </div>
+            <div class="info-item">
+              <span class="info-label">Total IPs:</span> {{ network_info.total_ips }}
+            </div>
+            <div class="info-item">
+              <span class="info-label">Usable IPs:</span> {{ network_info.usable_ips }}
+            </div>
+            <div class="info-item">
+              <span class="info-label">Prefix Length:</span> /{{ network_info.prefixlen }}
+            </div>
+          </div>
+
+          {% if system_info %}
+          <div class="info-card">
+            <h3>System Information</h3>
+            <div class="info-item">
+              <span class="info-label">Hostname:</span> {{ system_info.hostname }}
+            </div>
+            <div class="info-item">
+              <span class="info-label">Local IP:</span> {{ system_info.local_ip }}
+            </div>
+            <div class="info-item">
+              <span class="info-label">Platform:</span> {{ system_info.platform }} {{ system_info.platform_release }}
+            </div>
+            <h4>Network Interfaces:</h4>
+            {% for interface in system_info.interfaces %}
+            <div class="info-item">
+              <span class="info-label">{{ interface.name }}:</span>
+              IP: {{ interface.ip }}
+              {% if interface.netmask %} | Netmask: {{ interface.netmask }}{% endif %}
+              {% if interface.broadcast %} | Broadcast: {{ interface.broadcast }}{% endif %}
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+
+          {% if device_stats %}
+          <div class="info-card">
+            <h3>Device Statistics</h3>
+            <div class="info-item">
+              <span class="info-label">Total Devices:</span> {{ device_stats.total_devices }}
+            </div>
+            <div class="info-item">
+              <span class="info-label">New Devices (5 min):</span> {{ device_stats.new_devices_count }}
+            </div>
+            <div class="info-item">
+              <span class="info-label">Last Scan:</span> {{ device_stats.most_recent_scan }}
+            </div>
+            <h4>Device Types:</h4>
+            <div class="device-type-stats">
+              {% for type, count in device_stats.device_types.items() %}
+              <div class="device-type-item">
+                <div class="device-type-count">{{ count }}</div>
+                <div>{{ type }}</div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+
       <ul class="device-list">
         {% for device in scanned %}
         <li class="device-item">
